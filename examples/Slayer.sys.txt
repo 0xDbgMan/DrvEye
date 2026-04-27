@@ -1,0 +1,158 @@
+[36m╔═════════════════════════════════════════╗
+║   DrvEye  Windows Driver Rev&Analysis   ║
+║   [2mCredit:[0m[36m @0xDbgMan                     ║
+╚═════════════════════════════════════════╝[0m
+[*] Live MS block list: 889 SHA-1 + 870 SHA-256 hashes (4.4d old)
+[*] Live MS trust list: 988 roots, 0 disallowed (4.4d old) [+972 new to kernel trust]
+[*] Analysis started: Slayer.sys
+[*] SHA-256  : 3111f4d7d4fac55103453c4c8adb742def007b96b7c8ed265347df97137fbee0
+[*] imphash  : f6f2d5db1625547a53ee3ca65d01246f
+[*] Architecture: x64 | Kernel Driver: Yes
+[*] Image Base: 0x10000 | Imports: 52 | Sections: 6
+[*] VersionInfo: OriginalFilename: EnPortv.sys | CompanyName: Guidance Software Inc. | FileVersion:  | FileDescription: EnCase Driver
+[*] Mitigations ON : none
+[33m[!][0m Mitigations OFF: HIGH_ENTROPY_VA, DYNAMIC_BASE, FORCE_INTEGRITY, NX_COMPAT, NO_SEH, GUARD_CF, GS_COOKIE  [HVCI:NO]
+
+[*] ─── Authenticode Signature ───
+[1m[+][0m   Status    : crypto OK · anchor [ms-root-referenced] · cert expired (grandfathered by TS 2008-11-20)
+[*]   Primary   : SHA1 [✓]  signed by Guidance Software, Inc.
+[*]              → VeriSign Class 3 Code Signing 2004 CA
+[*]   Timestamp : 2008-11-20  [accepted (legacy TSA — bind OK)]  via VeriSign Time Stamping Services Signer - G2
+[*]   Anchor    : Microsoft Code Verification Root  [kernel-trusted]
+[33m[!][0m   HVCI Prereqs: none (no WHQL/EV/page-hashes)
+[*]   Org       : Guidance Software, Inc.
+[*]   Serial    : 4F97F8F029BB92115E173AC1B62A8193
+[*]   Key       : RSA-1024
+[*]   Valid     : 2006-12-15 → 2010-01-31
+[*]   Thumbprint: 5c8561da9b14914806c8ee8595fdec811210198d
+[*]   Chain (5 certs):
+[*]     [0] VeriSign Time Stamping Services Signer - G2 [EXPIRED]
+[*]         Issuer: VeriSign Time Stamping Services CA
+[*]         Serial: 3825D7FAF861AF9EF490E726B5D65AD5
+[*]         Valid : 2007-06-15 → 2012-06-14
+[*]     [1] VeriSign Time Stamping Services CA [CA] [EXPIRED]
+[*]         Issuer: Thawte Timestamping CA
+[*]         Serial: 47BF1995DF8D524643F7DB6D480D31A4
+[*]         Valid : 2003-12-04 → 2013-12-03
+[*]     [2] VeriSign Class 3 Code Signing 2004 CA [CA] [CodeSign] [EXPIRED]
+[*]         Issuer: 
+[*]         Serial: 4191A15A3978DFCF496566381D4C75C2
+[*]         Valid : 2004-07-16 → 2014-07-15
+[*]     [3]  [CA] [EXPIRED]
+[*]         Issuer: Microsoft Code Verification Root
+[*]         Serial: 610C120600000000001B
+[*]         Valid : 2006-05-23 → 2016-05-23
+[*]     [4] Guidance Software, Inc. [CodeSign] [EXPIRED]
+[*]         Issuer: VeriSign Class 3 Code Signing 2004 CA
+[*]         Serial: 4F97F8F029BB92115E173AC1B62A8193
+[*]         Valid : 2006-12-15 → 2010-01-31
+
+[*] Scanning imports...
+
+[1m[+][0m ─── LOAD VERDICT: WILL LOAD (blocked only under HVCI) ───
+  [37mDefault Win10/11         : WILL LOAD[0m
+  [37mSecure Boot + DSE        : WILL LOAD[0m
+  [31mHVCI / Memory Integrity  : WILL NOT LOAD[0m
+      • FORCE_INTEGRITY flag not set (HVCI requires it on the PE header)
+      • W+X section present (HVCI forbids RWX)
+  [37mTest-signing mode        : WILL LOAD[0m
+  [31mS Mode                   : WILL NOT LOAD[0m
+      • No WHQL attestation EKU — S Mode / Secured-Core require WHQL-signed drivers
+      • No Authenticode page hashes (Secured-Core requires per-page integrity)
+
+  [31mAll blockers found:[0m
+    [31m[BLOCKED][0m FORCE_INTEGRITY flag not set (HVCI requires it on the PE header)
+    [31m[BLOCKED][0m No Authenticode page hashes (Secured-Core requires per-page integrity)
+    [31m[BLOCKED][0m No WHQL attestation EKU — S Mode / Secured-Core require WHQL-signed drivers
+    [31m[BLOCKED][0m W+X section present (HVCI forbids RWX)
+
+  [37mPasses:[0m
+    [37m[PASS][0m Any valid signature accepted under test-signing
+    [37m[PASS][0m Chain anchored (ms-root-referenced)
+    [37m[PASS][0m Counter-sig binds to primary (2008-11-20); legacy TSA crypto — Windows CryptoAPI accepts it
+    [37m[PASS][0m SHA-1 grandfathered (timestamped before 2015-07-29 kernel cutoff)
+    [37m[PASS][0m Signature crypto + PE hash OK
+    [37m[PASS][0m Signed
+    [37m[PASS][0m Signed 2008-11-20 (pre-expiry) — cert expiry ignored by Windows
+
+  [37mConfidence:[0m live MS trust list loaded (988 roots, 0 disallowed, 4.4d old)
+    Static checks cover signature crypto, PE hash, chain anchor, HVCI prereqs, and MS block list.
+    Not checked: live OCSP/CRL revocation, current WDAC policy, local test-signing / DSE state, page-hash integrity.
+
+[*] imports Function:
+  [!] KeAttachProcess, ZwTerminateProcess, ZwMapViewOfSection
+  [*] MmGetSystemRoutineAddress, PsLookupProcessByProcessId, ZwOpenProcess, ZwCreateFile, IoCreateDevice
+[*] Detected IOCTL codes (25):
+    0x00223048  @0x141C0  (BUFFERED, FILE_ANY_ACCESS)  → object access  [!] any-user
+    0x0022304C  @0x1412E  (BUFFERED, FILE_ANY_ACCESS)  → query process  [!] any-user
+    0x00223050  @0x14097  (BUFFERED, FILE_ANY_ACCESS)  → process attach  [!!ATTACH]  [!] any-user  bugs=toctou-attach  [shares process-attach-site with 0x00223054, 0x0022309C]
+    0x00223054  @0x13FE1  (BUFFERED, FILE_ANY_ACCESS)  → process attach  [!!ATTACH]  [!] any-user  bugs=toctou-attach  [shares process-attach-site with 0x00223050, 0x0022309C]
+    0x00223058  @0x13F9E  (BUFFERED, FILE_ANY_ACCESS)  → stub (no observable calls)  [!] any-user
+    0x0022305C  @0x18E42  (BUFFERED, FILE_ANY_ACCESS)  → stub (no observable calls)  [!] any-user
+    0x00223064  @0x144B9  (BUFFERED, FILE_ANY_ACCESS)  → validate addr  [!] any-user  bugs=toctou-attach  [shares process-attach-site with 0x0022309C]
+    0x00223068  @0x1444C  (BUFFERED, FILE_ANY_ACCESS)  → process attach  [!!ATTACH]  [!] any-user  [shares process-attach-site with 0x0022309C]
+    0x0022306C  @0x143DF  (BUFFERED, FILE_ANY_ACCESS)  → registry access  [!] any-user  bugs=length-bounded
+    0x00223070  @0x14394  (BUFFERED, FILE_ANY_ACCESS)  → file op  [!] any-user
+    0x00223074  @0x1433A  (BUFFERED, FILE_ANY_ACCESS)  → registry delete  [!!REG OP]  [!] any-user
+    0x00223078  @0x142EC  (BUFFERED, FILE_ANY_ACCESS)  → process kill  [!!KILLER]  [!] any-user  bugs=process-kill,toctou-attach  [UNGATED-sink]  [shares process-attach-site with 0x0022309C]
+    0x00223080  @0x1489D  (BUFFERED, FILE_ANY_ACCESS)  → token access  [!!TOKEN STEAL]  [!] any-user  bugs=length-bounded,token-theft
+    0x00223084  @0x1483A  (BUFFERED, FILE_ANY_ACCESS)  → process access  [!] any-user
+    0x00223088  @0x147B5  (BUFFERED, FILE_ANY_ACCESS)  [!] any-user
+    0x0022308C  @0x14720  (BUFFERED, FILE_ANY_ACCESS)  → query process  [!] any-user  bugs=toctou-attach  [shares process-attach-site with 0x00223090, 0x0022309C]
+    0x00223090  @0x14696  (BUFFERED, FILE_ANY_ACCESS)  → query process  [!] any-user  bugs=toctou-attach  [shares process-attach-site with 0x0022308C, 0x0022309C]
+    0x00223094  @0x145D9  (BUFFERED, FILE_ANY_ACCESS)  → stub (no observable calls)  [!] any-user
+    0x0022309C  @0x14DA2  (BUFFERED, FILE_ANY_ACCESS)  → process kill  [!!KILLER]  [!] any-user  bugs=length-unbounded,process-kill,toctou-attach  [shares process-attach-site with 0x00223050, 0x00223054]
+    0x002230A0  @0x14CA3  (BUFFERED, FILE_ANY_ACCESS)  → process attach  [!!ATTACH]  [!] any-user  bugs=length-unbounded,toctou-attach
+    0x002230A4  @0x14C5B  (BUFFERED, FILE_ANY_ACCESS)  [!] any-user
+    0x002230C0  @0x14BE7  (BUFFERED, FILE_ANY_ACCESS)  → object access  [!] any-user
+    0x002230C4  @0x14A39  (BUFFERED, FILE_ANY_ACCESS)  → mem map  [!] any-user  bugs=arbitrary-rw
+    0x002230C8  @0x149BB  (BUFFERED, FILE_ANY_ACCESS)  → query process  [!] any-user
+    0x00222058  @0x14F25  (BUFFERED, FILE_ANY_ACCESS)  → trivial (completes IRP only)  [!] any-user
+
+[*] Exploit Primitives:
+    0x00223050 (process attach): process-attach [@0x11ACF shared]
+    0x00223054 (process attach): process-attach [@0x11ACF shared]
+    0x00223064 (validate addr): process-attach [@0x16160 shared]
+    0x00223068 (process attach): process-attach [@0x16E61 shared]
+    0x00223078 (process kill): process-attach [@0x16BEC shared], process-kill
+    0x00223080 (token access): token-steal
+    0x00223084 (process access): process-control
+    0x0022308C (query process): process-attach [@0x12C75 shared]
+    0x00223090 (query process): process-attach [@0x12C75 shared]
+    0x0022309C (process kill): process-attach [@0x11ACF shared]
+    0x002230A0 (process attach): process-attach
+
+    (9 unique primitive implementation(s) across 12 IOCTL tags — 5 shared by multiple IOCTLs)
+
+[*] Recovered IOCTL Input Structures: 22 IOCTLs (use -v to show)
+
+[!] Device Access Security:
+    Creation API   : IoCreateDevice
+    Secure Open    : No
+    Exclusive      : No
+    SDDL           : None (default permissive ACL)
+    Symlink        : \DosDevices\<ServiceName>  [user-accessible]
+    Symlink        : \DosDevices\_root_  [user-accessible]
+    Issues (5):
+      [!] Uses Iocreatedevice
+      [*] No File Device Secure Open
+      [*] Not Exclusive
+      [*] Has Symlinks
+      [!] No Sddl
+
+[*] ─── Device Names & Symbolic Links (4) ───
+    [*] \Device\NamedPipe (kernel-only)
+    [+] \DosDevices\<ServiceName> (user-accessible)  →  CreateFile("\\.\<ServiceName>")
+    [*] \Device\_root_ (kernel-only)
+    [+] \DosDevices\_root_ (user-accessible)  →  CreateFile("\\.\_root_")
+
+[+] ─── User-Mode Accessible Devices (1) ───
+    [+] \\.\_root_  →  \Device\_root_
+
+[!] ─── Devices WITHOUT User-Mode Symlink (1) ───
+    (These cannot be opened from user-mode via CreateFile)
+    [-] \Device\NamedPipe
+
+[*] ─── Registry References (1) ───
+    (keys/values the driver reads — device name may be loaded here at runtime)
+    [r] RegistryValue:SymbolicLink

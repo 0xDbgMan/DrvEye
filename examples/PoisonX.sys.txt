@@ -1,0 +1,104 @@
+[36m╔═════════════════════════════════════════╗
+║   DrvEye  Windows Driver Rev&Analysis   ║
+║   [2mCredit:[0m[36m @0xDbgMan                     ║
+╚═════════════════════════════════════════╝[0m
+[*] Live MS block list: 889 SHA-1 + 870 SHA-256 hashes (4.4d old)
+[*] Live MS trust list: 988 roots, 0 disallowed (4.4d old) [+972 new to kernel trust]
+[*] Analysis started: PoisonX.sys
+[*] SHA-256  : a5035cbd6c31616288aa66d98e5a25441ee38651fb5f330676319f921bb816a4
+[*] imphash  : 47c3554d0dee53d4f925ed52484bea12
+[*] Architecture: x64 | Kernel Driver: Yes
+[*] Image Base: 0x140000000 | Imports: 19 | Sections: 6
+[*] Mitigations ON : HIGH_ENTROPY_VA, DYNAMIC_BASE, NX_COMPAT, GUARD_CF, GS_COOKIE
+[33m[!][0m Mitigations OFF: FORCE_INTEGRITY, NO_SEH  [HVCI:NO]
+
+[*] ─── Authenticode Signature ───
+[1m[+][0m   Status    : crypto OK · anchor [ms-root-referenced] · cert expired (grandfathered by TS 2025-03-25)
+[*]   Primary   : SHA256 [✓]  signed by Microsoft Windows Hardware Compatibility Publisher
+[*]              → Microsoft Windows Third Party Component CA 2014
+[*]   Timestamp : 2025-03-25  [verified]  (RFC3161)
+[*]   Anchor    : Microsoft Root Certificate Authority 2010  [kernel-trusted]
+[*]   HVCI Prereqs: WHQL EKU
+[*]   Org       : Microsoft Corporation
+[*]   Serial    : 330000006E1229856F0ADE6CFC00000000006E
+[*]   Key       : RSA-2048
+[*]   Valid     : 2024-10-10 → 2025-10-08
+[*]   Thumbprint: a5d13378e659ddc05c03ee71b432dd667a302999
+[*]   Chain (2 certs):
+[*]     [0] Microsoft Windows Hardware Compatibility Publisher [CodeSign] [EXPIRED]
+[*]         Issuer: Microsoft Windows Third Party Component CA 2014
+[*]         Serial: 330000006E1229856F0ADE6CFC00000000006E
+[*]         Valid : 2024-10-10 → 2025-10-08
+[*]     [1] Microsoft Windows Third Party Component CA 2014 [CA]
+[*]         Issuer: Microsoft Root Certificate Authority 2010
+[*]         Serial: 330000000D690D5D7893D076DF00000000000D
+[*]         Valid : 2014-10-15 → 2029-10-15
+
+[*] Scanning imports...
+
+[1m[+][0m ─── LOAD VERDICT: WILL LOAD (blocked only under HVCI) ───
+  [37mDefault Win10/11         : WILL LOAD[0m
+  [37mSecure Boot + DSE        : WILL LOAD[0m
+  [31mHVCI / Memory Integrity  : WILL NOT LOAD[0m
+      • FORCE_INTEGRITY flag not set (HVCI requires it on the PE header)
+  [37mTest-signing mode        : WILL LOAD[0m
+  [31mS Mode                   : WILL NOT LOAD[0m
+      • No Authenticode page hashes (Secured-Core requires per-page integrity)
+
+  [31mAll blockers found:[0m
+    [31m[BLOCKED][0m FORCE_INTEGRITY flag not set (HVCI requires it on the PE header)
+    [31m[BLOCKED][0m No Authenticode page hashes (Secured-Core requires per-page integrity)
+
+  [37mPasses:[0m
+    [37m[PASS][0m Any valid signature accepted under test-signing
+    [37m[PASS][0m Chain anchored (ms-root-referenced)
+    [37m[PASS][0m Signature crypto + PE hash OK
+    [37m[PASS][0m Signed
+    [37m[PASS][0m Signed 2025-03-25 (pre-expiry) — cert expiry ignored by Windows
+    [37m[PASS][0m WHQL attestation EKU present
+    [37m[PASS][0m WHQL attestation EKU present (Secured-Core ready)
+
+  [37mConfidence:[0m live MS trust list loaded (988 roots, 0 disallowed, 4.4d old)
+    Static checks cover signature crypto, PE hash, chain anchor, HVCI prereqs, and MS block list.
+    Not checked: live OCSP/CRL revocation, current WDAC policy, local test-signing / DSE state, page-hash integrity.
+
+[*] imports Function:
+  [!] KeStackAttachProcess, ZwTerminateProcess
+  [*] ObReferenceObjectByName, IoCreateDevice, ZwOpenProcess
+[*] Detected IOCTL codes (2):
+    0x0022E008  @0x1400017A2  (BUFFERED, FILE_READ_WRITE)  → process kill  [!!KILLER]  bugs=process-kill  [UNGATED-sink]  [shares process-kill-site with 0x0022E010]
+    0x0022E010  @0x140001860  (BUFFERED, FILE_READ_WRITE)  → process kill  [!!KILLER]  bugs=process-kill  [UNGATED-sink]  [shares process-kill-site with 0x0022E008]
+
+[*] Exploit Primitives:
+    0x0022E008 (process kill): process-kill [@0x140001838 shared]
+    0x0022E010 (process kill): process-kill [@0x140001838 shared]
+
+    (1 unique primitive implementation(s) across 2 IOCTL tags — 1 shared by multiple IOCTLs)
+
+[*] Recovered IOCTL Input Structures: 1 IOCTLs (use -v to show)
+
+[!] Device Access Security:
+    Creation API   : IoCreateDevice
+    Device Type    : 0x22
+    Secure Open    : Yes
+    Exclusive      : No
+    SDDL           : None (default permissive ACL)
+    Symlink        : \DosDevices\{F8284233-48F4-4680-ADDD-F8284233}  [user-accessible]
+    Symlink        : \DosDevices\{F8284233-48F4-4680-ADDD-F8284233}  [user-accessible]
+    Issues (4):
+      [!] Uses Iocreatedevice
+      [*] Not Exclusive
+      [*] Has Symlinks
+      [!] No Sddl
+
+[*] ─── Device Names & Symbolic Links (3) ───
+    [*] \Device\{F8284233-48F4-4680-ADDD-F8284233} (kernel-only)
+    [+] \DosDevices\{F8284233-48F4-4680-ADDD-F8284233} (user-accessible)  →  CreateFile("\\.\{F8284233-48F4-4680-ADDD-F8284233}")
+    [+] \DosDevices\{F8284233-48F4-4680-ADDD-F8284233} (user-accessible)  →  CreateFile("\\.\{F8284233-48F4-4680-ADDD-F8284233}")
+
+[+] ─── User-Mode Accessible Devices (1) ───
+    [+] \\.\{F8284233-48F4-4680-ADDD-F8284233}  →  \Device\{F8284233-48F4-4680-ADDD-F8284233}
+
+[*] ─── Registry References (1) ───
+    (keys/values the driver reads — device name may be loaded here at runtime)
+    [r] RegistryValue:SymbolicLink
