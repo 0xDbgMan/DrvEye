@@ -1,0 +1,60 @@
+# ════════════════════════════════════════════════════════════════════
+# DrvEye  Windows Driver Rev & Analysis  —  Dependencies
+# ════════════════════════════════════════════════════════════════════
+#
+# Install everything:
+#     pip install -r requirements.txt
+#
+# Minimal install (skip optional features):
+#     pip install pefile capstone cryptography
+# ════════════════════════════════════════════════════════════════════
+
+
+# ── CORE  (required) ────────────────────────────────────────────────
+# Without these the tool will not start.
+
+pefile>=2023.2.7              # PE file parsing (NT headers, sections, IAT,
+                              # security directory, version info)
+capstone>=5.0.1               # x86-64 disassembly engine (Capstone 5+)
+cryptography>=42.0.0          # Authenticode signature verification —
+                              # PKCS#7 RSA-PKCS1v15 / ECDSA, X.509 chain,
+                              # certificatePolicies / EKU parsing.
+                              # Needs the `not_valid_after_utc` API → 42+.
+
+
+# ── OPTIONAL  (feature-gated, install for full coverage) ────────────
+# Each is wrapped in a try/except in the source so the tool still runs
+# without them — you just lose the corresponding feature.
+
+unicorn>=2.0.0                # Full-CPU emulation of DriverEntry for
+                              # hardened device-name extraction (XOR
+                              # chains, AES-decrypted strings, runtime-
+                              # built names). Without it the static
+                              # device-name strategies still produce
+                              # results — you just lose the emulator
+                              # fallback.
+
+z3-solver>=4.13.0             # SMT solver used for hash-dispatched IOCTL
+                              # recovery and constraint-based reasoning
+                              # at dangerous-API call sites. The
+                              # `--loldrivers` / IOCTL-discovery paths
+                              # gracefully skip Z3-backed reasoning if
+                              # this isn't installed.
+
+yara-python>=4.5.0            # YARA pattern matching used by
+                              # --save-pocs / --check-script enrichment
+                              # paths and by the bundled YARA rule
+                              # generator. Only needed if you generate
+                              # those artifacts.
+
+
+# ── BUILD-TIME EXTRAS  (used by --compile only) ─────────────────────
+# These are NOT Python packages — they are external toolchains the
+# tool shells out to. Install via your system package manager when you
+# pass --compile to auto-build generated PoC `.c` files into Windows
+# `.exe` artifacts.
+#
+#   Debian / Ubuntu :  sudo apt install gcc-mingw-w64-x86-64
+#   Arch / Manjaro  :  sudo pacman -S mingw-w64-gcc
+#   macOS (brew)    :  brew install mingw-w64
+#   Windows         :  install MinGW-w64 from https://mingw-w64.org/
