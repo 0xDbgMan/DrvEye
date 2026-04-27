@@ -74,7 +74,7 @@ def generate_yara_rule(pe_info: dict, scanner: "VulnScanner",
         description = "Auto-generated rule for {orig}"
         sha256_prefix = "{sha}"
         capabilities = "{purpose_meta}"
-        generated_by = "TheDebugger"
+        generated_by = "DrvEye"
     strings:
 {chr(10).join(strings)}
     condition:

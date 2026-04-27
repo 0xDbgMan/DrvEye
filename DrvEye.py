@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-TheDebugger.py — Windows Driver Static Analysis & Bug Hunter
-Usage: python TheDebugger.py driver.sys [--save-pocs] [--source file.c ...]
+DrvEye.py — Windows Driver Static Analysis & Bug Hunter
+Usage: python DrvEye.py driver.sys [--save-pocs] [--source file.c ...]
 
 Analyzes .sys kernel drivers for vulnerabilities and generates PoC exploits.
 

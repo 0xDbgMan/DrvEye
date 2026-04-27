@@ -96,22 +96,22 @@ Plus minifilter port detection (`FltCreateCommunicationPort`).
 
 ```bash
 # Analyze a driver
-python3 TheDebugger.py path/to/driver.sys
+python3 DrvEye.py path/to/driver.sys
 
 # Verbose + save PoCs
-python3 TheDebugger.py driver.sys -v --save-pocs
+python3 DrvEye.py driver.sys -v --save-pocs
 
 # Generate IDAPython annotation script for instant RE acceleration
-python3 TheDebugger.py driver.sys --ida driver_annotations.py
+python3 DrvEye.py driver.sys --ida driver_annotations.py
 
 # Refresh Microsoft policy data + LOLDrivers intel before scanning
-python3 TheDebugger.py --live-check --loldrivers driver.sys
+python3 DrvEye.py --live-check --loldrivers driver.sys
 
 # Batch — multiple drivers in one invocation
-python3 TheDebugger.py *.sys
+python3 DrvEye.py *.sys
 
 # Full power: live data + IDA script + JSON + PoCs + fuzzer
-python3 TheDebugger.py driver.sys --live-check --loldrivers \
+python3 DrvEye.py driver.sys --live-check --loldrivers \
     --json report.json --ida driver.idapy --save-pocs --fuzzer
 ```
 
@@ -138,7 +138,7 @@ pip install pefile capstone cryptography unicorn yara-python
 git clone https://github.com/<your-username>/drivertool.git
 cd drivertool
 pip install -r requirements.txt    # if a requirements.txt is provided
-python3 TheDebugger.py --help
+python3 DrvEye.py --help
 ```
 
 > **Note**: Unicorn is optional. Without it the static device-name recovery still produces results — you just lose the emulator fallback for hardened drivers.
@@ -148,7 +148,7 @@ python3 TheDebugger.py --help
 ## CLI reference
 
 ```text
-usage: TheDebugger.py [-h] [--source SOURCE [SOURCE ...]] [--output-dir DIR]
+usage: DrvEye.py [-h] [--source SOURCE [SOURCE ...]] [--output-dir DIR]
                       [--save-pocs] [--verbose] [--no-color] [--compile]
                       [--device NAME] [--json FILE] [--output FILE]
                       [--fuzzer] [--check-script] [--tracer] [--ida FILE]
@@ -192,7 +192,7 @@ Caches live under `~/.cache/drivertool/` and persist between runs. Run weekly to
 
 ```bash
 # One-time refresh — ~3-5 seconds, downloads ~350 KB total
-python3 TheDebugger.py --live-check --loldrivers driver.sys
+python3 DrvEye.py --live-check --loldrivers driver.sys
 ```
 
 After the refresh, every subsequent run uses the cached data automatically — no need to re-pass the flags.
