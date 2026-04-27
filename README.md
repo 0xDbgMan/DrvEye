@@ -252,8 +252,4 @@ Issues and PRs welcome. Areas where contributions land especially well:
 
 When adding a new detector, please also add a probe entry to the capability inventory test so it can be regression-checked from day one.
 
----
 
-## Acknowledgements
-
-The tool stands on the shoulders of decades of community work — `pefile`, `capstone`, `cryptography`, `unicorn`, the LOLDrivers project, Microsoft's published WDAC policy, and every reverse engineer who's written about kernel-driver internals on the public internet. Thank you.
