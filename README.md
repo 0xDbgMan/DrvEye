@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="logo.png" alt="DrvEye Logo" width="300">
+  <img src="logo.png" alt="DrvEye Logo" width="500">
 </p>
 
 # drivertool
