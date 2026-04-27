@@ -139,7 +139,7 @@ pip install pefile capstone cryptography unicorn yara-python
 ### Quick install
 
 ```bash
-git clone https://github.com/<your-username>/drivertool.git
+git clone https://github.com/0xDbgMan/DrvEye.git
 cd drivertool
 pip install -r requirements.txt    # if a requirements.txt is provided
 python3 DrvEye.py --help
