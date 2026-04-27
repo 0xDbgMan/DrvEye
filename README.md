@@ -238,18 +238,4 @@ If you find a vulnerability in a vendor driver, please follow responsible disclo
 
 MIT — see [LICENSE](LICENSE).
 
----
-
-## Contributing
-
-Issues and PRs welcome. Areas where contributions land especially well:
-
-- **Detector improvements** — new bug-class detectors, refined primitive classifiers
-- **Coverage gaps** — driver samples that exercise FSCTL, hash-dispatch, minifilter, or thin-wrapper paths
-- **Live data sources** — additional threat-intel feeds beyond LOLDrivers
-- **Output integrations** — SARIF, HTML, GitHub Action wrappers
-- **Documentation** — per-detector explanations, real-world walkthroughs
-
-When adding a new detector, please also add a probe entry to the capability inventory test so it can be regression-checked from day one.
-
 
