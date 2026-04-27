@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="logo.png" alt="DrvEye Logo" width="300">
+</p>
+
 # drivertool
 
 **A static-analysis & exploitation-triage toolkit for Windows kernel drivers.**
