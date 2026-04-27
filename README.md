@@ -3,8 +3,8 @@
 **A static-analysis & exploitation-triage toolkit for Windows kernel drivers.**
 
 Answers two questions about any `.sys` file:
-1. **Will this driver actually load on Windows?** — full Authenticode + WDAC + HVCI policy modelling.
-2. **What can it do, and how would I exploit it?** — IOCTL discovery, taint analysis, exploit-primitive classification, PoC generation.
+1. **Will this driver actually load on Windows?** full Authenticode + WDAC + HVCI policy modelling.
+2. **What can it do, and how would I exploit it?** IOCTL discovery, taint analysis, exploit-primitive classification, PoC generation.
 
 Built for BYOVD hunters, driver triagers, kernel reverse engineers, and security researchers who want a deep static report on a driver in seconds.
 
@@ -16,7 +16,7 @@ For every driver you point it at:
 
 ### Load verdict
 
-A per-Windows-configuration matrix — not a single yes/no:
+A per-Windows-configuration matrix not a single yes/no:
 
 ```
 ─── LOAD VERDICT ───
@@ -68,7 +68,7 @@ Classifications gated by a real analysis stack:
 - **Constant propagation** + bounds-check inference
 - **Basic-block CFG** + path-sensitive gate detection (`every path passes through SeAccessCheck?`)
 - **Shared call-site dedup** + thin-wrapper detection (one primitive, multiple entry points)
-- **EPROCESS semantic field map** — Token / Protection / SignatureLevel / ImageFilePointer write classification across Win8.1..Win11
+- **EPROCESS semantic field map** Token / Protection / SignatureLevel / ImageFilePointer write classification across Win8.1..Win11
 - **Tightened double-fetch detector** (4-gate: same offset + check-between + no capture API + flow-to-sink)
 
 ### Device-name recovery
@@ -107,7 +107,7 @@ python3 DrvEye.py driver.sys --ida driver_annotations.py
 # Refresh Microsoft policy data + LOLDrivers intel before scanning
 python3 DrvEye.py --live-check --loldrivers driver.sys
 
-# Batch — multiple drivers in one invocation
+# Batch multiple drivers in one invocation
 python3 DrvEye.py *.sys
 
 # Full power: live data + IDA script + JSON + PoCs + fuzzer
@@ -122,11 +122,11 @@ python3 DrvEye.py driver.sys --live-check --loldrivers \
 ### Requirements
 
 - **Python 3.9+**
-- **pefile** — PE parsing
-- **capstone** — x86-64 disassembly
-- **cryptography** — Authenticode RSA/ECDSA verification
-- **unicorn** *(optional)* — full-CPU emulation for hardened device-name extraction
-- **yara-python** *(optional)* — for `--save-pocs` / `--check-script` enrichment
+- **pefile** PE parsing
+- **capstone** x86-64 disassembly
+- **cryptography** Authenticode RSA/ECDSA verification
+- **unicorn** *(optional)* full-CPU emulation for hardened device-name extraction
+- **yara-python** *(optional)* for `--save-pocs` / `--check-script` enrichment
 
 ```bash
 pip install pefile capstone cryptography unicorn yara-python
@@ -141,7 +141,7 @@ pip install -r requirements.txt    # if a requirements.txt is provided
 python3 DrvEye.py --help
 ```
 
-> **Note**: Unicorn is optional. Without it the static device-name recovery still produces results — you just lose the emulator fallback for hardened drivers.
+> **Note**: Unicorn is optional. Without it the static device-name recovery still produces results you just lose the emulator fallback for hardened drivers.
 
 ---
 
@@ -182,36 +182,36 @@ usage: DrvEye.py [-h] [--source SOURCE [SOURCE ...]] [--output-dir DIR]
 
 By default, the tool falls back to ~20 hardcoded Microsoft root-CA thumbprints. With `--live-check` it pulls the actual current data Windows uses:
 
-- **`authroot.stl`** — ~988 trusted root CA thumbprints
-- **`disallowedcert.stl`** — explicitly distrusted cert thumbprints
-- **`SiPolicy_Enforced.p7b`** — Microsoft's WDAC vulnerable-driver block list (~889 SHA-1 + ~870 SHA-256 hashes)
+- **`authroot.stl`** ~988 trusted root CA thumbprints
+- **`disallowedcert.stl`** explicitly distrusted cert thumbprints
+- **`SiPolicy_Enforced.p7b`** Microsoft's WDAC vulnerable-driver block list (~889 SHA-1 + ~870 SHA-256 hashes)
 
 `--loldrivers` adds external community/research feeds (LOLDrivers, MalwareBazaar, Hybrid Analysis, HEVD) into a unified local index.
 
 Caches live under `~/.cache/drivertool/` and persist between runs. Run weekly to stay current.
 
 ```bash
-# One-time refresh — ~3-5 seconds, downloads ~350 KB total
+# One-time refresh ~3-5 seconds, downloads ~350 KB total
 python3 DrvEye.py --live-check --loldrivers driver.sys
 ```
 
-After the refresh, every subsequent run uses the cached data automatically — no need to re-pass the flags.
+After the refresh, every subsequent run uses the cached data automatically no need to re-pass the flags.
 
 ---
 
-## Output sections (in default verbosity)
+## Output sections
 
-1. **PE summary** — SHA-256, imphash, architecture, mitigations, version info
-2. **Authenticode signature** — status, primary + nested digest, timestamp, anchor, HVCI prereqs, full chain
-3. **Load verdict** — per-config matrix + blockers + passes + confidence
-4. **Imports** — dangerous functions called by the driver
-5. **IOCTL codes** — every recovered IOCTL with handler VA, purpose, primitives, bug classes, convergence chips
-6. **Exploit primitives** — per-IOCTL primitive list with shared-site VAs
-7. **Device access security** — IoCreateDeviceSecure status, SDDL, exclusivity, symlink reachability, issues
-8. **Device names & symbolic links** — all recovered device paths
-9. **Minifilter ports** — `FltCreateCommunicationPort` entries (when present)
-10. **Registry references** — keys/values the driver reads
-11. **ROP gadgets, exploit chains, taint paths, Z3 solutions** — extra detail with `-v`
+1. **PE summary** SHA-256, imphash, architecture, mitigations, version info
+2. **Authenticode signature** status, primary + nested digest, timestamp, anchor, HVCI prereqs, full chain
+3. **Load verdict** per-config matrix + blockers + passes + confidence
+4. **Imports** dangerous functions called by the driver
+5. **IOCTL codes** every recovered IOCTL with handler VA, purpose, primitives, bug classes, convergence chips
+6. **Exploit primitives** per-IOCTL primitive list with shared-site VAs
+7. **Device access security** IoCreateDeviceSecure status, SDDL, exclusivity, symlink reachability, issues
+8. **Device names & symbolic links** all recovered device paths
+9. **Minifilter ports** `FltCreateCommunicationPort` entries (when present)
+10. **Registry references** keys/values the driver reads
+11. **ROP gadgets, exploit chains, taint paths, Z3 solutions** extra detail with `-v`
 
 With `--verbose`, you also get IRP-handler behavior breakdowns, per-IOCTL recovered input structs, entry-point disassembly, and bug-class taxonomy explanations.
 
@@ -226,16 +226,16 @@ This tool is built for:
 - BYOVD investigation in a defensive context
 - Reverse engineering education and CTF challenges
 
-It is **not** a malware authoring kit. The PoC / fuzzer / tracer artifacts it generates are stub C/PowerShell harnesses — they require a vulnerable driver on the target system and are intended for analysts confirming reproducibility on systems they own or have explicit authorization to test.
+It is **not** a malware authoring kit. The PoC / fuzzer / tracer artifacts it generates are stub C/PowerShell harnesses they require a vulnerable driver on the target system and are intended for analysts confirming reproducibility on systems they own or have explicit authorization to test.
 
 You are responsible for ensuring you have authorization to analyze any driver, run any generated PoC, or load any binary onto any system. The authors disclaim liability for misuse.
 
-If you find a vulnerability in a vendor driver, please follow responsible disclosure — the project authors actively support that path.
+If you find a vulnerability in a vendor driver, please follow responsible disclosure the project authors actively support that path.
 
 ---
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+MIT see [LICENSE](LICENSE).
 
 
